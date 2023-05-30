@@ -51,6 +51,13 @@ public class ApacheCSVDataReader implements CSVDataReader {
 					onInconsistentLine.accept(csvRecord.getRecordNumber() - 1);
 					continue;
 				}
+				
+				if(startDate.compareTo(endDate) > 0)
+				{
+					// the start date is after the end date
+					onInconsistentLine.accept(csvRecord.getRecordNumber() - 1);
+					continue;
+				}
 
 				final Long employeeId = Long.parseLong(csvRecord.get(Headers.EMPOYEE_ID).trim());
 				employees.putIfAbsent(employeeId, new Employee(employeeId));
@@ -60,7 +67,7 @@ public class ApacheCSVDataReader implements CSVDataReader {
 				final Project currentProject = new Project(projectId);
 				currentEmployee.getProjectDays().putIfAbsent(currentProject, 0l);
 				currentEmployee.getProjectDays().computeIfPresent(currentProject, (proj, currentDays) -> {
-					final long days = Duration.between(startDate.toInstant(), endDate.toInstant()).toDays();
+					final long days = Math.abs(Duration.between(startDate.toInstant(), endDate.toInstant()).toDays());
 					return currentDays + days;
 				});
 			}
