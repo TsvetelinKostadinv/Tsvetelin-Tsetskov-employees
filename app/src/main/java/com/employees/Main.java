@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.employees.csvDataReader.ApacheCSVDataReader;
+import com.employees.csvDataReader.CSVDataReader;
+import com.employees.csvDataReader.DataReadResult;
+import com.employees.models.employee.EmployeePair;
+
 public class Main {
 
 	private static final String HELP_STRING = "Start without parameters for GUI mode." + System.lineSeparator()

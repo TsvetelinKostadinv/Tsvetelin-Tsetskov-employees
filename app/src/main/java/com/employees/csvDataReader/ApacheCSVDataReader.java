@@ -1,4 +1,4 @@
-package com.employees;
+package com.employees.csvDataReader;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -15,6 +15,16 @@ import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
+import com.employees.models.employee.Employee;
+import com.employees.models.project.Project;
+
+/**
+ * An implementation class for the data reader interface. Uses the Apache
+ * Commons CSV parser in order to not parse manually
+ * 
+ * @author Tsvetelin
+ *
+ */
 public class ApacheCSVDataReader implements CSVDataReader {
 
 	private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -25,7 +35,11 @@ public class ApacheCSVDataReader implements CSVDataReader {
 
 		Map<Long, Employee> employees = res.getEmployees();
 
+		// We specify a custom format in order to be able to use the header enum and use
+		// the variants as indexes in the row itself making the process a tad more
+		// typesafe
 		CSVFormat customFormat = CSVFormat.RFC4180.builder().setHeader(Headers.class).build();
+
 		boolean headerLine = true;
 		try (final CSVParser parser = CSVParser.parse(reader, customFormat);) {
 			for (CSVRecord csvRecord : parser) {
@@ -51,10 +65,9 @@ public class ApacheCSVDataReader implements CSVDataReader {
 					onInconsistentLine.accept(csvRecord.getRecordNumber() - 1);
 					continue;
 				}
-				
-				if(startDate.compareTo(endDate) > 0)
-				{
-					// the start date is after the end date
+
+				if (startDate.compareTo(endDate) > 0) {
+					// The start date is after the end date
 					onInconsistentLine.accept(csvRecord.getRecordNumber() - 1);
 					continue;
 				}

@@ -1,4 +1,4 @@
-package com.employees;
+package com.employees.models.employee;
 
 public class EmployeePair {
 	private final Employee employeeA;

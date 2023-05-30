@@ -1,5 +1,10 @@
-package com.employees;
+package com.employees.models.project;
 
+/**
+ * Simple POD class that encapsulates what a project is
+ * @author Tsvetelin
+ *
+ */
 public class Project {
 	private final Long id;
 
@@ -7,7 +12,11 @@ public class Project {
 		super();
 		this.id = id;
 	}
-
+	
+	/**
+	 * Very important in the case of projects as they are used as keys in maps 
+	 * @see Employee#projectDays
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
