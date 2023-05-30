@@ -10,6 +10,14 @@ public class EmployeePair {
 		this.employeeB = employeeB;
 	}
 
+	public Employee getEmployeeA() {
+		return employeeA;
+	}
+
+	public Employee getEmployeeB() {
+		return employeeB;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof EmployeePair) {

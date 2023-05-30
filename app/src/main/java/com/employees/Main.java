@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.ToLongFunction;
 
@@ -28,6 +29,11 @@ public class Main {
 				});
 				System.out.println(res.getEmployees());
 
+				if (res.getEmployees().size() < 2) {
+					System.out.println(
+							"The employee set is empty. Check that the csv file is conforming to the specification and contains at least 2 employees");
+				}
+
 				Map<EmployeePair, Long> pairs = new HashMap<>();
 
 				res.getEmployees().forEach((idA, emplA) -> {
@@ -39,11 +45,11 @@ public class Main {
 									// find common projects and add up the min of the days
 									System.out.printf("Computing common hours between %d and %d%n", idA, idB);
 									final long totalCommonWorkingDays = emplA.getProjectDays().entrySet().stream()
-											.filter(entry -> emplB.getProjectDays().containsKey(entry.getKey()))
-											.map(entry -> {
-												final Long daysOfB = emplB.getProjectDays().get(entry.getKey());
+											.mapToLong(entry -> {
+												final Long daysOfB = emplB.getProjectDays().getOrDefault(entry.getKey(),
+														0l);
 												return Math.min(entry.getValue(), daysOfB);
-											}).mapToLong(x -> x).sum();
+											}).sum();
 
 									return totalCommonWorkingDays;
 								} else {
@@ -56,6 +62,18 @@ public class Main {
 						}
 					});
 				});
+
+				final Entry<EmployeePair, Long> pairWithLongest = pairs.entrySet().stream().reduce((entryA, entryB) -> {
+					if (entryA.getValue() > entryB.getValue()) {
+						return entryA;
+					} else {
+						return entryB;
+					}
+				}).orElseThrow(() -> new IllegalStateException("There should be at least one pair at this point!"));
+
+				System.out.printf("Longest working employees - %d and %d for %d days",
+						pairWithLongest.getKey().getEmployeeA().getId(),
+						pairWithLongest.getKey().getEmployeeB().getId(), pairWithLongest.getValue());
 
 			} catch (FileNotFoundException e) {
 				System.out.printf("File %s not found%n", args[0]);
