@@ -1,2 +1,2 @@
 @echo off
-gradle clean build run --args="..\large_test.csv"
+gradle clean build run --args="..\app\src\test\resources\large_test.csv"
