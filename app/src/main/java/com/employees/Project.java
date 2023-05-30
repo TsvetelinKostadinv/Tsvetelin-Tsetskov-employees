@@ -18,6 +18,7 @@ public class Project {
 
 	@Override
 	public String toString() {
-		return String.format("Project id %d", id);
+		return "Project [id=" + id + "]";
 	}
+
 }
