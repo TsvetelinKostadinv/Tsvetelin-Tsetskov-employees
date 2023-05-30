@@ -1,13 +1,7 @@
 package com.employees;
 
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
 
 public class Main {
 
@@ -18,30 +12,24 @@ public class Main {
 		SUCESS, UNRECOGNISED_PARAMS, FILE_NOT_FOUND, COULD_NOT_READ
 	}
 
-	enum Headers {
-		EMPOYEE_ID, PROJECT_ID, START_DATE, END_DATE
-	}
-
 	public static void main(String[] args) {
 		if (args.length == 0) {
 			System.out.println("Should be GUI mode");
 		} else if (args.length == 1) {
-			CSVFormat customFormat = CSVFormat.RFC4180.builder().setHeader(Headers.class).build();
+			CSVDataReader reader = new ApacheCSVDataReader();
 
-			try (final FileReader csvData = new FileReader(new File(args[0]));
-					final CSVParser parser = CSVParser.parse(csvData, customFormat);) {
-				for (CSVRecord csvRecord : parser) {
-					if (!csvRecord.isConsistent()) {
-						System.err.printf("Inconsistent row N%d - ignoring%n", csvRecord.getRecordNumber() - 1);
-						continue;
-					}
-					csvRecord.get(Headers.EMPOYEE_ID);
-				}
+			try {
+				DataReadResult res = reader.readDataFromPath(args[0], (Long row) -> {
+					System.out.printf("Inconsistent line N%d - ignoring!%n", row);
+				});
+				
+				
+				
 			} catch (FileNotFoundException e) {
-				System.err.printf("File not found %s%n", args[0]);
+				System.out.printf("File %s not found%n", args[0]);
 				System.exit(ExitCodes.FILE_NOT_FOUND.ordinal());
 			} catch (IOException e) {
-				System.err.printf("Could not read file %s%n", args[0]);
+				System.out.printf("Could not read file %s%n", args[0]);
 				System.exit(ExitCodes.COULD_NOT_READ.ordinal());
 			}
 
